@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">HttpDemo</string>
+    <string name="query">搜索</string>
+</resources>
