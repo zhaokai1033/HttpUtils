@@ -1,4 +1,4 @@
-package com.code.open.http;
+package com.code.open.http.cookie;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

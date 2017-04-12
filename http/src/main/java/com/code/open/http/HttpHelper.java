@@ -3,6 +3,10 @@ package com.code.open.http;
 import android.content.Context;
 import android.util.Log;
 
+import com.code.open.http.cookie.CookiesManager;
+import com.code.open.http.cookie.PersistentCookieStore;
+import com.code.open.http.interceptor.LogInterceptor;
+import com.code.open.http.interceptor.NetStateInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
@@ -31,51 +35,57 @@ import okhttp3.Response;
  */
 
 @SuppressWarnings({"unused", "WeakerAccess"})
-public class HttpUtils {
+public class HttpHelper {
 
     public final static int SUCCESS = 1000;
     public final static int ERROR_TIME_OUT = 1001;
     public final static int ERROR_IO = 1002;
 
-    private static final String TAG = "HttpUtils";
-    private static HttpUtils mInstance;
+    private static final String TAG = "HttpHelper";
+    private static HttpHelper mInstance;
     private final OkHttpClient mOkHttpClient;
     private final CookiesManager cookieManager;
     private final RequestHeaderBuilder defaultRequestHeadBuilder;
     private final Gson mGson;
     private RequestHeaderBuilder requestHeaderBuilder;
 
-    public static HttpUtils getInstance() {
+    public static HttpHelper getInstance() {
         isInit();
         return mInstance;
     }
 
-    public static HttpUtils newInstance(Context context, Config config) {
-        return new HttpUtils(context, config);
+    public static HttpHelper newInstance(Context context, Config config) {
+        return new HttpHelper(context, config);
     }
 
-    private HttpUtils(Context context, Config config) {
+    private HttpHelper(Context context, Config config) {
         if (config == null) {
-            config = new Config(10, 10, 30, false, "网络连接失败");
+            config = new Config(true);
         }
         mGson = new Gson();
         cookieManager = CookiesManager.newInstance(context.getApplicationContext());
-        mOkHttpClient = new OkHttpClient()
+        OkHttpClient.Builder builder = new OkHttpClient()
                 .newBuilder()
                 .cookieJar(cookieManager)
                 .connectTimeout(config.connectTimeout, TimeUnit.SECONDS)
                 .writeTimeout(config.writeTimeout, TimeUnit.SECONDS)
-                .readTimeout(config.readTimeout, TimeUnit.SECONDS)
-                .build();
+                .readTimeout(config.readTimeout, TimeUnit.SECONDS);
+        if (config.isDebug && (config.isShowRequest || config.isShowResponse)) {
+            builder.addInterceptor(new LogInterceptor(config));
+        }
+        if (config.isAddNetListener) {
+            builder.addInterceptor(new NetStateInterceptor(context,config));
+        }
+        mOkHttpClient = builder.build();
         defaultRequestHeadBuilder = RequestHeaderBuilder.newInstance();
     }
 
-    public static HttpUtils init(Context context, Config config) {
+    public static HttpHelper init(Context context, Config config) {
 
         if (mInstance == null)
             synchronized (TAG) {
                 if (mInstance == null) {
-                    mInstance = new HttpUtils(context, config);
+                    mInstance = new HttpHelper(context, config);
                 }
             }
         return mInstance;
@@ -457,7 +467,7 @@ public class HttpUtils {
      */
     private static void isInit() {
         if (mInstance == null || mInstance.defaultRequestHeadBuilder == null) {
-            throw new RuntimeException("you need call HttpUtils.init() first");
+            throw new RuntimeException("you need call HttpHelper.init() first");
         }
     }
 }

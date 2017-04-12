@@ -2,7 +2,8 @@ package com.code.open.httpdemo;
 
 import android.app.Application;
 
-import com.code.open.http.HttpUtils;
+import com.code.open.http.Config;
+import com.code.open.http.HttpHelper;
 
 /**
  * ================================================
@@ -16,6 +17,8 @@ public class SampleApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        HttpUtils.init(getApplicationContext(), null);
+        Config config = new Config(true);
+        config.isFormat = true;
+        HttpHelper.init(getApplicationContext(), config);
     }
 }

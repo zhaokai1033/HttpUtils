@@ -1,4 +1,4 @@
-package com.code.open.http;
+package com.code.open.http.cookie;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -28,6 +28,7 @@ import okhttp3.HttpUrl;
  * ================================================
  */
 
+@SuppressWarnings("WeakerAccess")
 public class PersistentCookieStore {
     private static final String LOG_TAG = "PersistentCookieStore";
     private static final String COOKIE_PREFS = "Cookies_Prefs";
@@ -35,7 +36,7 @@ public class PersistentCookieStore {
     private final Map<String, ConcurrentHashMap<String, Cookie>> cookies;
     private final SharedPreferences cookiePrefs;
 
-    public PersistentCookieStore(Context context) {
+    PersistentCookieStore(Context context) {
         cookiePrefs = context.getSharedPreferences(COOKIE_PREFS, 0);
         cookies = new HashMap<>();
 

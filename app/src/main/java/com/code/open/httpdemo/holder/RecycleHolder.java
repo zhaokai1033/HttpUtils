@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
-import com.code.open.http.HttpUtils;
+import com.code.open.http.HttpHelper;
 import com.code.open.http.RequestBodyBuilder;
 import com.code.open.httpdemo.model.GitSearch;
 import com.code.open.httpdemo.view.MainActivity;
@@ -28,13 +28,16 @@ import io.reactivex.schedulers.Schedulers;
 
 public class RecycleHolder implements MainActivity.RecycleHolderFace {
     private static final String TAG = "RecycleHolder";
-    public static RecycleHolder holder;
+    private static RecycleHolder holder;
     private final RecycleAdapter adapter;
 
     private RecycleHolder() {
         adapter = new RecycleAdapter();
     }
 
+    /**
+     * 共用一个Holder
+     */
     public static RecycleHolder getInstance() {
         if (holder == null) {
             synchronized (TAG) {
@@ -56,7 +59,7 @@ public class RecycleHolder implements MainActivity.RecycleHolderFace {
         Observable.create(new ObservableOnSubscribe<GitSearch>() {
             @Override
             public void subscribe(ObservableEmitter<GitSearch> e) throws Exception {
-                GitSearch result = HttpUtils.getResult(baseUrl,
+                GitSearch result = HttpHelper.getResult(baseUrl,
                         RequestBodyBuilder
                                 .newFormBody()
                                 .add("q", name)
