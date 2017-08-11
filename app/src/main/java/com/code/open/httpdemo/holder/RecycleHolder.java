@@ -56,26 +56,29 @@ public class RecycleHolder implements MainActivity.RecycleHolderFace {
     public void onSearchClick(View view, final String name) {
 
         Log.d(TAG, "name:" + name);
-        Observable.create(new ObservableOnSubscribe<GitSearch>() {
-            @Override
-            public void subscribe(ObservableEmitter<GitSearch> e) throws Exception {
-                GitSearch result = HttpHelper.getResult(
-                        url,
-                        RequestBodyBuilder.newFormBody().add("q", name),
-                        GitSearch.class);
-                e.onNext(result);
-                e.onComplete();
-            }
-        })
+        Observable
+                .create(
+                        new ObservableOnSubscribe<GitSearch>() {
+                            @Override
+                            public void subscribe(ObservableEmitter<GitSearch> e) throws Exception {
+                                GitSearch result = HttpHelper.getResult(
+                                        url,
+                                        RequestBodyBuilder.newFormBody().add("q", name),
+                                        GitSearch.class);
+                                e.onNext(result);
+                                e.onComplete();
+                            }
+                        })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<GitSearch>() {
-                    @Override
-                    public void accept(@NonNull GitSearch result) throws Exception {
-                        adapter.setItems(result.getItems());
-                        Log.d(TAG, "count:" + result.getTotal_count());
-                    }
-                });
+                .subscribe(
+                        new Consumer<GitSearch>() {
+                            @Override
+                            public void accept(@NonNull GitSearch result) throws Exception {
+                                adapter.setItems(result.getItems());
+                                Log.d(TAG, "count:" + result.getTotal_count());
+                            }
+                        });
     }
 
     @Override
