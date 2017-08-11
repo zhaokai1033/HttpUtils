@@ -106,8 +106,9 @@ public class LogInterceptor implements Interceptor {
         String method = request.method();
         RequestBody requestBody = request.body();
         Log.d(tag, "=========================request start=========================");
-        Log.d(tag, "Https:" + isHttps + "\t method:" + method
-                + " url:" + (httpUrl == null ? "null" : httpUrl.toString()));
+        Log.d(tag, "url:" + (httpUrl == null ? "null" : httpUrl.toString()));
+        Log.d(tag, "Https:" + isHttps);
+        Log.d(tag, "method:" + method);
         if (headers != null && headers.size() > 0) {
             Log.d(tag, "Header:\n" + headers.toString());
         }

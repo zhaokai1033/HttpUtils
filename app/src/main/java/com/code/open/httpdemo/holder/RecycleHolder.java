@@ -50,7 +50,7 @@ public class RecycleHolder implements MainActivity.RecycleHolderFace {
     }
 
     //    https://github.com/search?q=zhaokai&type=Users&utf8=✓
-    private String baseUrl = "https://api.github.com/search/users";
+    private String url = "https://api.github.com/search/users";
 
     @Override
     public void onSearchClick(View view, final String name) {
@@ -59,11 +59,10 @@ public class RecycleHolder implements MainActivity.RecycleHolderFace {
         Observable.create(new ObservableOnSubscribe<GitSearch>() {
             @Override
             public void subscribe(ObservableEmitter<GitSearch> e) throws Exception {
-                GitSearch result = HttpHelper.getResult(baseUrl,
-                        RequestBodyBuilder
-                                .newFormBody()
-                                .add("q", name)
-                        , GitSearch.class);
+                GitSearch result = HttpHelper.getResult(
+                        url,
+                        RequestBodyBuilder.newFormBody().add("q", name),
+                        GitSearch.class);
                 e.onNext(result);
                 e.onComplete();
             }

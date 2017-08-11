@@ -16,7 +16,6 @@ import java.text.StringCharacterIterator;
  * ================================================
  */
 
-@SuppressWarnings("unused")
 public class Util {
 
     private CharacterIterator it;
